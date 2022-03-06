@@ -70,7 +70,6 @@ public class DHT22 implements Runnable {
 
     private void refreshData() {
 
-        log.info("refreshData()");
         int pollDataCheck = pollDHT22();
         if (pollDataCheck >= 40 && checkParity()) {
 
