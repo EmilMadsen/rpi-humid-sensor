@@ -1,0 +1,23 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.0'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+}
+
+group = 'dk.emad'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.pi4j:pi4j-core:1.2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+	useJUnitPlatform()
+}
