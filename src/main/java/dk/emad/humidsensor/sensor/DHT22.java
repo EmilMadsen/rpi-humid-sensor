@@ -17,9 +17,9 @@ public class DHT22 implements Runnable {
 
 
     public DHT22() {
-        // setup wiringPi
+        log.info("Setting up setup wiringPi GPIO");
         if (Gpio.wiringPiSetup() == -1) {
-            System.out.println(" ==>> GPIO SETUP FAILED");
+            log.error(" ==>> GPIO SETUP FAILED");
             return;
         }
         GpioUtil.export(3, GpioUtil.DIRECTION_OUT);
@@ -70,6 +70,7 @@ public class DHT22 implements Runnable {
 
     private void refreshData() {
 
+        log.info("polling DHT22");
         int pollDataCheck = pollDHT22();
         if (pollDataCheck >= 40 && checkParity()) {
 
