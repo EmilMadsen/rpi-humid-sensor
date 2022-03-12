@@ -71,7 +71,7 @@ public class DHT22 implements Runnable {
     private void refreshData() {
 
         int pollDataCheck = pollDHT22();
-        log.info("polled dht22 - timing: {} - storage bytes: {}", pollDataCheck, dht22_dat);
+        log.debug("polled dht22 - timing: {} - storage bytes: {}", pollDataCheck, dht22_dat);
         if (pollDataCheck >= 40 && checkParity()) {
 
             final float newHumidity = (float) ((dht22_dat[0] << 8) + dht22_dat[1]) / 10;
@@ -94,7 +94,7 @@ public class DHT22 implements Runnable {
                 }
             }
 
-            log.info("humidity: {} - temp: {}", humidity, temperature);
+            log.debug("humidity: {} - temp: {}", humidity, temperature);
         }
     }
 
