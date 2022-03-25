@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
 public class PersistinatorService {
     private static final Logger log = LoggerFactory.getLogger(PersistinatorService.class);
 
-    @Value("{api.home}") private String apiHome;
+    @Value("${api.home}") private String apiHome;
 
     private DHT22 dht22;
     private final TaskExecutor taskExecutor;
