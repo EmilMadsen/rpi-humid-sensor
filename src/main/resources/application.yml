@@ -2,6 +2,4 @@ spring:
   main:
     web-application-type: none
 
-ikeahome:
-  api: http://192.168.0.44:8080
-  room: "køkken"
+api.home: http://192.168.0.52:18083

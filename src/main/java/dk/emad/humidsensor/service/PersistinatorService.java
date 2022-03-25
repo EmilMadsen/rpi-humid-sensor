@@ -1,11 +1,15 @@
 package dk.emad.humidsensor.service;
 
+import com.google.gson.Gson;
 import dk.emad.humidsensor.sensor.DHT22;
+import dk.emad.humidsensor.sensor.HumidSensorLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 
@@ -17,10 +21,16 @@ import javax.annotation.PostConstruct;
 public class PersistinatorService {
     private static final Logger log = LoggerFactory.getLogger(PersistinatorService.class);
 
+    @Value("{api.home}") private String apiHome;
+
     private DHT22 dht22;
     private final TaskExecutor taskExecutor;
+    private final RestTemplate restTemplate;
+    private final Gson gson;
 
-    public PersistinatorService(TaskExecutor taskExecutor) {
+    public PersistinatorService(TaskExecutor taskExecutor, RestTemplate restTemplate, Gson gson) {
+        this.restTemplate = restTemplate;
+        this.gson = gson;
         this.dht22 = new DHT22();
         this.taskExecutor = taskExecutor;
     }
@@ -32,9 +42,18 @@ public class PersistinatorService {
     }
 
     @Scheduled(fixedDelay = 5000)
-    public void doReading() {
+    public void logReading() {
         log.info("dht22 data: humid: {}, temp: {}", dht22.getHumidity(), dht22.getTemperature());
-        // TODO: store data via api
     }
+
+    @Scheduled(fixedDelay = 1000 * 60 * 2)
+    public void storeReading() {
+        log.debug("storing dht22 data: humid: {}, temp: {}", dht22.getHumidity(), dht22.getTemperature());
+        HumidSensorLog log = new HumidSensorLog((double) dht22.getHumidity(), (double) dht22.getTemperature());
+        String url = apiHome + "/api/sensor";
+        restTemplate.postForObject(url, gson.toJson(log), String.class);
+    }
+
+
 
 }
