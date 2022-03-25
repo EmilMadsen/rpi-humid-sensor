@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -48,10 +51,15 @@ public class PersistinatorService {
 
     @Scheduled(fixedDelay = 1000 * 60 * 2)
     public void storeReading() {
-        log.debug("storing dht22 data: humid: {}, temp: {}", dht22.getHumidity(), dht22.getTemperature());
-        HumidSensorLog log = new HumidSensorLog((double) dht22.getHumidity(), (double) dht22.getTemperature());
-        String url = apiHome + "/api/sensor";
-        restTemplate.postForObject(url, gson.toJson(log), String.class);
+        log.info("storing dht22 data: humid: {}, temp: {}", dht22.getHumidity(), dht22.getTemperature());
+        if (dht22.getHumidity() > 0 || dht22.getTemperature() > 0) {
+            HumidSensorLog log = new HumidSensorLog((double) dht22.getHumidity(), (double) dht22.getTemperature());
+            String url = apiHome + "/api/sensor";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<>(gson.toJson(log), headers);
+            restTemplate.postForObject(url, entity, String.class);
+        }
     }
 
 
